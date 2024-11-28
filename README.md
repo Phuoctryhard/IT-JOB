@@ -1,8 +1,8 @@
 ### Các bước cần làm để chạy dự án NestJS
 
 #### 1. Cài đặt thư viện với câu lệnh: npm i
-#### 2. Chạy dự án với câu lệnh: npm run dev
 
+#### 2. Chạy dự án với câu lệnh: npm run dev
 
 =================
 
@@ -14,8 +14,13 @@ Website chính thức: https://hoidanit.com.vn/
 
 Youtube “Hỏi Dân IT” : https://www.youtube.com/@hoidanit
 
-Tiktok “Hỏi Dân IT” :  https://www.tiktok.com/@hoidanit
+Tiktok “Hỏi Dân IT” : https://www.tiktok.com/@hoidanit
 
 Fanpage “Hỏi Dân IT” : https://www.facebook.com/askITwithERIC/
 
 Udemy Hỏi Dân IT: https://www.udemy.com/user/eric-7039/
+ngodinhphuoc100
+phuocyeuem2k3
+
+chọn method compass
+mongodb+srv://ngodinhphuoc100:phuocyeuem2k3@cluster0.2a4dm.mongodb.net/
