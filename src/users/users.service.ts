@@ -39,11 +39,14 @@ export class UsersService {
     return 'Error';
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  update(id: string, updateUserDto: UpdateUserDto) {
+    return this.userModel.updateOne({ _id: id }, { ...updateUserDto });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  remove(id: string) {
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      return this.userModel.deleteOne({ _id: id });
+    }
+    return 'Error';
   }
 }
