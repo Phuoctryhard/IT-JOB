@@ -32,8 +32,11 @@ export class UsersService {
     return `This action returns all users`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(id: string) {
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      return this.userModel.findOne({ _id: id });
+    }
+    return 'Error';
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

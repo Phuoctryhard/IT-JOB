@@ -26,9 +26,11 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
+  @Get(':id') // ứng với router : /:id
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+    // const id : string = req.params.id
+    
+    return this.usersService.findOne(id);
   }
 
   @Patch(':id')
