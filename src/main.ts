@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -12,6 +13,7 @@ async function bootstrap() {
   app.setViewEngine('ejs');
 
   const configService = app.get(ConfigService);
+  app.useGlobalPipes(new ValidationPipe());
   const port = configService.get('PORT');
   await app.listen(port);
 }
