@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
 @Module({
   imports: [
     UsersModule,
@@ -12,7 +13,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MoongoDB'),
+        connectionFactory: (connection) => {
+          connection.plugin(softDeletePlugin);
+          return connection;
+        },
       }),
+
       inject: [ConfigService],
     }),
     ConfigModule.forRoot({
