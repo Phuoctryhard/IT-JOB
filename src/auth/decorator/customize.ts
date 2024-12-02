@@ -1,0 +1,9 @@
+import { SetMetadata } from '@nestjs/common';
+
+export const IS_PUBLIC_KEY = 'isPublic';
+// Định nghĩa 1 decorator Public
+//mục địch định nghĩa 1 decorator :  truyền metadata lên function . metadata là key : value thông tin đính kèm
+// ném metadata vào @decorator public , nestjs xử lí function login sẽ lấy dc metadata
+
+export const Public = () => SetMetadata(IS_PUBLIC_KEY, true); // key : value
+// custom decorator do chúng ta viết

@@ -12,6 +12,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { AuthService } from './auth/auth.service';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { Public } from './auth/decorator/customize';
 @Controller()
 export class AppController {
   constructor(
@@ -20,6 +21,7 @@ export class AppController {
     private authService: AuthService,
   ) {}
 
+  @Public()
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   async login(@Request() req) {
@@ -27,7 +29,9 @@ export class AppController {
     return this.authService.login(req.user);
   }
   // can co jwt để encode
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
+  // muốn bỏ qua check JWT thì Public  , còn mặc định JWT  ///
+  // @Public()
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
