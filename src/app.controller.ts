@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { AuthService } from './auth/auth.service';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 @Controller()
 export class AppController {
   constructor(
@@ -24,6 +25,12 @@ export class AppController {
   async login(@Request() req) {
     // tạo token ở đây
     return this.authService.login(req.user);
+  }
+  // can co jwt để encode
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
   }
 
   @Get()
