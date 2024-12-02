@@ -6,13 +6,15 @@ import { ConfigService } from '@nestjs/config';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private configService: ConfigService) {
     super({
-      // giải mã request
+      // giải mã request giải mã access toekn
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('SECRET_KEY'),
+      // có key mới giả mã mât khẩu dc
+
+      secretOrKey: configService.get<string>('JWT_ACCESS_TOKEN'),
     });
   }
-  // decode phần user
+  // trả về thoogn tin người dùng sau khi giải mã
   async validate(payload: any) {
     // trả ra cái user để bên kia nạp vào req.user
     return { userId: payload.sub, username: payload.username };
