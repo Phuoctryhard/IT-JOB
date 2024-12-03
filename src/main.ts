@@ -15,6 +15,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   app.useGlobalPipes(new ValidationPipe());
+  // set up cors
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
