@@ -17,7 +17,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   // trả về thoogn tin người dùng sau khi giải mã
   async validate(payload: any) {
     // trả ra cái user để bên kia nạp vào req.user
-    return { userId: payload.sub, username: payload.username };
+    console.log(payload);
+    const { _id, name, email, role } = payload;
+    // req.user
+    return { _id, name, email, role };
   }
 }
 

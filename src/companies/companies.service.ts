@@ -5,15 +5,23 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Company, CompanyDocument } from './schemas/company.schemas';
 import { Model } from 'mongoose';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
+import { IUser } from 'src/users/user.interface';
 @Injectable()
 export class CompaniesService {
   constructor(
     @InjectModel(Company.name)
     private CompanyModel: SoftDeleteModel<CompanyDocument>,
   ) {}
-  create(createCompanyDto: CreateCompanyDto) {
+  create(createCompanyDto: CreateCompanyDto, user: IUser) {
     console.log(createCompanyDto);
-    return this.CompanyModel.create({ ...createCompanyDto });
+    // trả về đối tượng được định dạng theo Scheme
+    return this.CompanyModel.create({
+      ...createCompanyDto,
+      createBy: {
+        _id: user._id,
+        email: user.email,
+      },
+    });
     // return createCompanyDto;
   }
 
@@ -25,11 +33,33 @@ export class CompaniesService {
     return `This action returns a #${id} company`;
   }
 
-  update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    return `This action updates a #${id} company`;
+  update(id: string, updateCompanyDto: UpdateCompanyDto, user: IUser) {
+    return this.CompanyModel.updateOne(
+      { _id: id },
+      {
+        ...updateCompanyDto,
+        updateBy: {
+          _id: user._id,
+          email: user.email,
+        },
+      },
+    );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} company`;
+  async remove(id: string, user: IUser) {
+    // xóa cứng
+    // return this.CompanyModel.deleteOne({ _id: id });
+
+    // xóa mêm + them việc cập nhật  deleteBy
+    await this.CompanyModel.updateOne(
+      { _id: id },
+      {
+        deleteBy: {
+          _id: user._id,
+          email: user.email,
+        },
+      },
+    );
+    return this.CompanyModel.softDelete({ _id: id });
   }
 }

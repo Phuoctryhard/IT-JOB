@@ -13,7 +13,6 @@ const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
 @Module({
   imports: [
     UsersModule,
-
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       // config servive vs moongo
