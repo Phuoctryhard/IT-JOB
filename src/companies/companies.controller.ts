@@ -6,14 +6,19 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
-import { User } from 'src/auth/decorator/customize';
+import { Public, User } from 'src/auth/decorator/customize';
 import { IUser } from 'src/users/user.interface';
-
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { api_tags } from 'src/constants/api_tag';
+@ApiTags(api_tags.Company)
+@ApiBearerAuth('access-token') // 👈 trùng với tên ở .addBearerAuth()
 @Controller('companies')
+@Public()
 export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
   // them coong ty
@@ -23,8 +28,17 @@ export class CompaniesController {
   }
 
   @Get()
-  findAll() {
-    return this.companiesService.findAll();
+    @ApiOperation({ summary: 'Lấy danh sách công ty có phân trang và lọc nâng cao' })
+  @ApiQuery({ name: 'page', required: false, example: 1, description: 'Trang hiện tại (bắt đầu từ 1)' })
+  @ApiQuery({ name: 'limit', required: false, example: 10, description: 'Số lượng mục trên mỗi trang' })
+  @ApiQuery({ name: 'name', required: false, example: 'ABC', description: 'Lọc theo tên công ty' })
+  @ApiQuery({ name: 'sort', required: false, example: '-createdAt', description: 'Sắp xếp' })
+  @ApiQuery({ name: 'populate', required: false, example: 'owner', description: 'Quan hệ cần populate' })
+  findAll(@Query('page') currentPage : string , 
+  @Query('limit') limit : string,
+  @Query() qs : string,
+)  {
+    return this.companiesService.findAll(+currentPage,+limit,qs);
   }
 
   @Get(':id')

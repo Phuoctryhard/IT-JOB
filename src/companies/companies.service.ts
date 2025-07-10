@@ -6,6 +6,8 @@ import { Company, CompanyDocument } from './schemas/company.schemas';
 import { Model } from 'mongoose';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from 'src/users/user.interface';
+import { isEmpty } from 'class-validator';
+import aqp from 'api-query-params';
 @Injectable()
 export class CompaniesService {
   constructor(
@@ -18,16 +20,71 @@ export class CompaniesService {
     return this.CompanyModel.create({
       ...createCompanyDto,
       createBy: {
-        _id: user._id,
-        email: user.email,
+        _id: user?._id || null,
+        email: user?.email || null,
       },
     });
     // return createCompanyDto;
   }
 
-  findAll() {
-    return `This action returns all companies`;
+ async findAll(currentPage: number, limit: number, qs: string) {
+
+  // Parse query string thành filter, sort, populate dùng thư viện aqp
+  let { filter, sort, population,projection } = aqp(qs);
+
+  // Xóa page và limit khỏi filter để tránh ảnh hưởng đến truy vấn MongoDB
+  delete filter.page;
+  delete filter.limit;
+
+  // In ra filter và populate để debug
+  console.log(filter);
+  // 👉 Biến các trường string thành regex nếu muốn "search like"
+  if (filter.name) {
+    filter.name = { $regex: filter.name, $options: 'i' }; // like không phân biệt hoa thường
   }
+  // Tính toán offset cho phân trang (bỏ qua bao nhiêu bản ghi)
+  let offset = (+currentPage - 1) * (+limit);
+
+  // Nếu limit không hợp lệ thì mặc định là 10
+  let defaultLimit = +limit ? +limit : 10;
+
+  // Lấy tổng số bản ghi phù hợp với filter
+  // ⚠️ Có thể thay bằng `countDocuments(filter)` để hiệu quả hơn
+  const totalItems = (await this.CompanyModel.find(filter)).length;
+
+  // Tính tổng số trang
+  const totalPages = Math.ceil(totalItems / defaultLimit);
+
+  // Nếu không có sort thì mặc định sort theo -updatedAt (mới nhất trước)
+  if (isEmpty(sort)) {
+    // @ts-ignore: Unreachable code error (bỏ qua cảnh báo TS)
+    sort = "-updatedAt";
+  }
+
+  // Truy vấn danh sách công ty với filter, phân trang, sắp xếp, và populate
+  // sử dụng toán tử like 
+
+  const result = await this.CompanyModel.find(filter)
+    .skip(offset) // bỏ qua offset bản ghi
+    .limit(defaultLimit) // giới hạn số lượng bản ghi trả về
+    // bỏ qua check code typeScipt tại dòng dưới 
+    // @ts-ignore: Unreachable code error (bỏ qua lỗi nếu sort sai kiểu)
+    .sort(sort) // any everywhere 
+    .populate(population) // join bảng 
+    .exec(); // thực thi query
+
+  // Trả về kết quả
+  return {
+    meta: {
+    current: currentPage, //trang hiện tại
+    pageSize: limit, //số lượng bản ghi đã lấy
+    pages: totalPages, //tổng số trang với điều kiện query
+    total: totalItems // tổng số phần tử (số bản ghi)
+    },
+    result
+  }
+}
+
 
   findOne(id: number) {
     return `This action returns a #${id} company`;
@@ -55,11 +112,12 @@ export class CompaniesService {
       { _id: id },
       {
         deleteBy: {
-          _id: user._id,
-          email: user.email,
+          _id: user?._id || 1,
+          email: user?.email || "Ngô đình phước",
         },
       },
     );
+    //isDeleted : true
     return this.CompanyModel.softDelete({ _id: id });
   }
 }

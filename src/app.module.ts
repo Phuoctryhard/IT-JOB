@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { CompaniesModule } from './companies/companies.module';
+import { MailModule } from './mail/mail.module';
 const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
 
 @Module({
@@ -19,6 +20,7 @@ const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MoongoDB'),
         connectionFactory: (connection) => {
+          console.log("Đã kết nối DB")
           connection.plugin(softDeletePlugin);
           return connection;
         },
@@ -31,6 +33,7 @@ const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
     }),
     AuthModule,
     CompaniesModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [

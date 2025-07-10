@@ -24,6 +24,7 @@ export class Company {
   @Prop({ type: Object })
   updateBy: {
     _id: mongoose.Schema.Types.ObjectId;
+  
     email: string;
   };
   @Prop({ type: Object })
