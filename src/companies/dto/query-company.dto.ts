@@ -22,7 +22,7 @@ export class QueryCompany {
   @IsString()
   name?: string;
 
-    @ApiPropertyOptional({ description: 'Lọc theo địa chỉ công ty', example: 'ABC' })
+  @ApiPropertyOptional({ description: 'Lọc theo địa chỉ công ty', example: 'ABC' })
   @IsOptional()
   @IsString()
   address?: string;

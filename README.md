@@ -24,3 +24,10 @@ phuocyeuem2k3
 
 chọn method compass
 mongodb+srv://ngodinhphuoc100:phuocyeuem2k3@cluster0.2a4dm.mongodb.net/
+
+
+// Note 
+Kết luận:
+Nếu interceptor không cần inject gì (ví dụ: chỉ log console) → dùng app.useGlobalInterceptors(new LoggingInterceptor())
+
+Nếu interceptor cần inject (ví dụ: LoggerService, ConfigService) → nên đăng ký qua APP_INTERCEPTOR trong module.

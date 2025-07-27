@@ -5,10 +5,11 @@ import { UsersModule } from './users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { CompaniesModule } from './companies/companies.module';
 import { MailModule } from './mail/mail.module';
+import { TransformInterceptor } from './core/transform.interceptor';
 const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
 
 @Module({
@@ -43,6 +44,11 @@ const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
     //   provide: APP_GUARD,
     //   useClass: JwtAuthGuard,
     // },
+  //Bạn nên đăng ký global interceptor từ trong module như sau:Với cách này, interceptor nằm trong NestJS DI container, nên bạn có thể inject mọi thứ như ConfigService, UserService, v.v.
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
+    },
   ],
 })
 export class AppModule {}
