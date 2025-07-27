@@ -1,3 +1,4 @@
 export enum api_tags {
-    Company = "companies"
+    Company = "companies",
+    User="User"
 }

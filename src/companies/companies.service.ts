@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -8,6 +8,7 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from 'src/users/user.interface';
 import { isEmpty } from 'class-validator';
 import aqp from 'api-query-params';
+import { json } from 'stream/consumers';
 @Injectable()
 export class CompaniesService {
   constructor(
@@ -27,9 +28,10 @@ export class CompaniesService {
     // return createCompanyDto;
   }
 
- async findAll(currentPage: number, limit: number, qs: string) {
+ async findAll(currentPage: number, limit: number, qs) {
 
   // Parse query string thành filter, sort, populate dùng thư viện aqp
+  // filter là phần chinh, thư viện đã làm hết rồi , tự động convert sang moogodb
   let { filter, sort, population,projection } = aqp(qs);
 
   // Xóa page và limit khỏi filter để tránh ảnh hưởng đến truy vấn MongoDB
@@ -38,10 +40,10 @@ export class CompaniesService {
 
   // In ra filter và populate để debug
   console.log(filter);
-  // 👉 Biến các trường string thành regex nếu muốn "search like"
-  if (filter.name) {
-    filter.name = { $regex: filter.name, $options: 'i' }; // like không phân biệt hoa thường
-  }
+  // 👉 Biến các trường string thành regex nếu muốn "search like"  || phía FE sử lý url cũng dc /value/i
+  // if (filter.name) {
+  //   filter.name = { $regex: filter.name, $options: 'i' }; // like không phân biệt hoa thường
+  // }
   // Tính toán offset cho phân trang (bỏ qua bao nhiêu bản ghi)
   let offset = (+currentPage - 1) * (+limit);
 
@@ -72,8 +74,6 @@ export class CompaniesService {
     .sort(sort) // any everywhere 
     .populate(population) // join bảng 
     .exec(); // thực thi query
-
-  // Trả về kết quả
   return {
     meta: {
     current: currentPage, //trang hiện tại
@@ -85,10 +85,16 @@ export class CompaniesService {
   }
 }
 
-
-  findOne(id: number) {
-    return `This action returns a #${id} company`;
+async findOne(id: string) {
+  const data = await this.CompanyModel.findOne({ _id: id });
+  
+  if (!data) {
+    throw new NotFoundException('Không tìm thấy công ty');
   }
+  return {
+    data
+  };
+}
 
   update(id: string, updateCompanyDto: UpdateCompanyDto, user: IUser) {
     return this.CompanyModel.updateOne(
@@ -96,8 +102,8 @@ export class CompaniesService {
       {
         ...updateCompanyDto,
         updateBy: {
-          _id: user._id,
-          email: user.email,
+          _id: user?._id || 1,
+          email: user?.email || "Ngô đình phước",
         },
       },
     );
