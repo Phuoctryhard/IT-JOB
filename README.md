@@ -31,3 +31,5 @@ Kết luận:
 Nếu interceptor không cần inject gì (ví dụ: chỉ log console) → dùng app.useGlobalInterceptors(new LoggingInterceptor())
 
 Nếu interceptor cần inject (ví dụ: LoggerService, ConfigService) → nên đăng ký qua APP_INTERCEPTOR trong module.
+
+// truyền relector vào new transform để lấy metadata

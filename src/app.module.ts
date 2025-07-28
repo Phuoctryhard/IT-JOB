@@ -45,10 +45,10 @@ const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
     //   useClass: JwtAuthGuard,
     // },
   //Bạn nên đăng ký global interceptor từ trong module như sau:Với cách này, interceptor nằm trong NestJS DI container, nên bạn có thể inject mọi thứ như ConfigService, UserService, v.v.
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: TransformInterceptor,
-    },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: TransformInterceptor,
+    // },
   ],
 })
 export class AppModule {}

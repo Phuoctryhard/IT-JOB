@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
-import { ValidationPipe } from '@nestjs/common';
+import { RequestMethod, ValidationPipe, VersioningType } from '@nestjs/common';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { TransformInterceptor } from './core/transform.interceptor';
@@ -13,9 +13,7 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'public')); // js,css , images
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('ejs');
-  // intercepter 
-  // app.useGlobalInterceptors(new TransformInterceptor());
-
+ 
   const configService = app.get(ConfigService);
   app.useGlobalPipes(new ValidationPipe());
   // set up cors
@@ -26,6 +24,12 @@ async function bootstrap() {
   });
 
   const reflector = app.get(Reflector);
+   // intercepter 
+  app.useGlobalInterceptors(new TransformInterceptor(reflector));
+  // app.useGlobalInterceptors(new ResponseInterceptor());
+  
+ 
+
   app.useGlobalGuards(new JwtAuthGuard(reflector));
   const port = configService.get('PORT');
 
@@ -34,7 +38,8 @@ async function bootstrap() {
     .setDescription('The IT JOB API description')
     .setVersion('1.0')
     .addTag('IT Jobs ')
-    .addServer('http://localhost:3000')
+    .addServer('http://localhost:3000/api/v1')
+     .addServer('http://localhost:3000/api/v2')
     .addBearerAuth(
     {
       type: 'http',
@@ -48,8 +53,17 @@ async function bootstrap() {
   )
     .build()
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory());
+  SwaggerModule.setup('api/v1', app, documentFactory());
 
+  app.setGlobalPrefix('api', {
+    exclude: [{ path: 'api/v1', method: RequestMethod.ALL }],
+  });
+
+  // Enable versioning via URI (/v1/users)
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: ['1', '2'],
+  });
   await app.listen(port);
 }
 bootstrap();

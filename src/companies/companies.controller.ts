@@ -11,7 +11,7 @@ import {
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
-import { Public, User } from 'src/auth/decorator/customize';
+import { Public, response_Message, User } from 'src/auth/decorator/customize';
 import { IUser } from 'src/users/user.interface';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { api_tags } from 'src/constants/api_tag';
@@ -28,6 +28,7 @@ export class CompaniesController {
     return this.companiesService.create(createCompanyDto,user);
   }
 
+  @response_Message("Lấy danh sách thành công")
   @Get()
   //   @ApiOperation({ summary: 'Lấy danh sách công ty có phân trang và lọc nâng cao' })
   // @ApiQuery({ name: 'page', required: false, example: 1, description: 'Trang hiện tại (bắt đầu từ 1)' })
