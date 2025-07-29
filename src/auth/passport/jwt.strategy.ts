@@ -11,7 +11,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       ignoreExpiration: false,
       // có key mới giả mã mât khẩu dc
 
-      secretOrKey: configService.get<string>('JWT_ACCESS_TOKEN'),
+      secretOrKey: configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
     });
   }
   // trả về thoogn tin người dùng sau khi giải mã

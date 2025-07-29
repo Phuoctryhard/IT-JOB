@@ -22,7 +22,7 @@ export class User {
 
   @Prop()
   address: string;
-
+  // bao gồm công ty 
   @Prop({ type: Object })
   company: {
     _id: mongoose.Schema.Types.ObjectId;
@@ -42,7 +42,7 @@ export class User {
   updateAt: Date;
 
   @Prop()
-  createAt: Date;
+  createdAt: Date;
 
   @Prop()
   deletedAt: Date;

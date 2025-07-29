@@ -36,10 +36,7 @@ export class TransformInterceptor<T>
             RESPONSE_MESSAGE,
             context.getHandler(),
           ) || '',
-          data : {
-            result : data.result ,
-            meta : data.meta
-          },
+          data
         })),
       );
   }

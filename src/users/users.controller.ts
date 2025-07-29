@@ -6,42 +6,60 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { api_tags } from 'src/constants/api_tag';
+import { response_Message, User } from 'src/auth/decorator/customize';
+import { IUser } from './user.interface';
 @ApiTags(api_tags.User)
+@ApiBearerAuth('access-token')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  @response_Message("Tạo User")
+@Post()
+ async  create(@Body() createUserDto: CreateUserDto , @User() user ) {
     console.log(createUserDto);
-    return this.usersService.create(createUserDto);
+    const NewUSer= await  this.usersService.create(createUserDto , user);
+    return {
+      _id : NewUSer._id,
+      createdAt : NewUSer?.createdAt
+    }
   }
-
+  @response_Message("Lấy danh sách User")
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(
+    @Query("page") currentPage : string,
+    @Query("limit") limit : string,
+    @Query() qs : string
+  ) {
+    return this.usersService.findAll(+currentPage,+limit,qs);
   }
-
+  @response_Message("Lấy danh User theo id")
   @Get(':id') // ứng với router : /:id
   findOne(@Param('id') id: string) {
     // const id : string = req.params.id
     return this.usersService.findOne(id);
   }
 
-  @Patch(':id')
+
+  @response_Message("Cập nhật User")
+  @Patch()
   @ApiBody({type :UpdateUserDto })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+  async update( @Body() updateUserDto: UpdateUserDto , @User() user : IUser) {
+    let UpdatedUser = await this.usersService.update( updateUserDto , user);
+    return UpdatedUser
   }
 
+
+  @response_Message("Xóa User")
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+  remove(@Param('id') id: string ,@User() user : IUser) {
+    return this.usersService.remove(id,user);
   }
 }

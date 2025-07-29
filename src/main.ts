@@ -7,6 +7,8 @@ import { RequestMethod, ValidationPipe, VersioningType } from '@nestjs/common';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { TransformInterceptor } from './core/transform.interceptor';
+import cookieParser from 'cookie-parser';
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   // chạy trên cổng 3000
@@ -28,7 +30,9 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
   // app.useGlobalInterceptors(new ResponseInterceptor());
   
- 
+  // somewhere in your initialization file
+  app.use(cookieParser());
+
 
   app.useGlobalGuards(new JwtAuthGuard(reflector));
   const port = configService.get('PORT');

@@ -21,13 +21,13 @@ export class AppController {
     private authService: AuthService,
   ) {}
 
-  @Public()
-  @UseGuards(LocalAuthGuard)
-  @Post('/login')
-  async login(@Request() req) {
-    // tạo token ở đây
-    return this.authService.login(req.user);
-  }
+  // @Public()
+  // @UseGuards(LocalAuthGuard)
+  // @Post('/login')
+  // async login(@Request() req) {
+  //   // tạo token ở đây
+  //   return this.authService.login(req.user);
+  // }
   // can co jwt để encode
   // @UseGuards(JwtAuthGuard)
   // muốn bỏ qua check JWT thì Public  , còn mặc định JWT  ///
