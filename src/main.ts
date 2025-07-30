@@ -20,7 +20,9 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   // set up cors
   app.enableCors({
-    origin: '*',
+    origin: true, // ✅ chính xác domain của frontend
+    // cho phép giữa client và server trao đổi cookie
+    credentials: true,               // ✅ để hỗ trợ gửi cookie hoặc Authorization header
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
   });
@@ -42,8 +44,8 @@ async function bootstrap() {
     .setDescription('The IT JOB API description')
     .setVersion('1.0')
     .addTag('IT Jobs ')
-    .addServer('http://localhost:3000/api/v1')
-     .addServer('http://localhost:3000/api/v2')
+    .addServer('http://localhost:8000/api/v1')
+     .addServer('http://localhost:8000/api/v2')
     .addBearerAuth(
     {
       type: 'http',

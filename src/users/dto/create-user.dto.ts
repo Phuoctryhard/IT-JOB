@@ -101,12 +101,12 @@ export class RegisterUserDto {
 
 export class Login {
     @ApiProperty({
-    example: 'example@gmail.com',
+    example: 'vsdxasmple@gmail.com',
     description: 'Email của người dùng',
   })
   @IsEmail({}, { message: 'Không phải là email' })
   @IsNotEmpty()
-  email: string;
+  username: string;
 
   @ApiProperty({
     example: 'strongPassword123',

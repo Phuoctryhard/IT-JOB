@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 export class CreateCompanyDto {
 
   @IsNotEmpty({ message: 'Name ko dc rỗng' })
@@ -22,4 +22,8 @@ export class CreateCompanyDto {
     example: 'Cung cấp giải pháp phần mềm và dịch vụ IT toàn diện',
   })
   description: string;
+
+  @ApiProperty({ example: "https://png.pngtree.com/element_pic/16/11/03/dda587d35b48fd01947cf38931323161.jpg", description: 'Url ảnh' })
+  @IsString()
+  logo : string
 }

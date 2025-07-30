@@ -32,14 +32,14 @@ export class CompaniesService {
 
   // Parse query string thành filter, sort, populate dùng thư viện aqp
   // filter là phần chinh, thư viện đã làm hết rồi , tự động convert sang moogodb
-  let { filter, sort, population,projection } = aqp(qs);
+  let { filter, sort, population} = aqp(qs);
 
   // Xóa page và limit khỏi filter để tránh ảnh hưởng đến truy vấn MongoDB
-  delete filter.page;
-  delete filter.limit;
+  delete filter.current;
+  delete filter.pageSize;
 
   // In ra filter và populate để debug
-  console.log(filter);
+  console.log("filter",filter);
   // 👉 Biến các trường string thành regex nếu muốn "search like"  || phía FE sử lý url cũng dc /value/i
   // if (filter.name) {
   //   filter.name = { $regex: filter.name, $options: 'i' }; // like không phân biệt hoa thường
@@ -91,9 +91,8 @@ async findOne(id: string) {
   if (!data) {
     throw new NotFoundException('Không tìm thấy công ty');
   }
-  return {
-    data
-  };
+  return data
+
 }
 
   update(id: string, updateCompanyDto: UpdateCompanyDto, user: IUser) {

@@ -9,6 +9,7 @@ import { IUser } from './user.interface';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import aqp from 'api-query-params';
 import { isEmpty } from 'class-validator';
+import { QueryUser } from './dto/query-user.dto';
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(UserM.name) private userModel: SoftDeleteModel<UserDocument>) {}
@@ -60,12 +61,12 @@ export class UsersService {
     return newRegister
   }
 
-  async findAll(currentPage : number,limit : number ,qs : string ) {
+  async findAll(currentPage : number,limit : number ,qs ) {
      let { filter, sort, population,projection } = aqp(qs);
 
   // Xóa page và limit khỏi filter để tránh ảnh hưởng đến truy vấn MongoDB
-  delete filter.page;
-  delete filter.limit;
+  delete filter.current;
+  delete filter.pageSize;
 
   // In ra filter và populate để debug
   console.log(filter);
@@ -155,5 +156,8 @@ export class UsersService {
     return await this.userModel.updateOne({_id:_id},{
       refreshToken
     })
+  }
+  findUserByToken = async(refreshToken)=>{
+    return this.userModel.findOne({refreshToken})
   }
 }

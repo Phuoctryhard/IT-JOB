@@ -2,27 +2,48 @@ import mongoose from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-export type CompanyDocument = HydratedDocument<Company>;
+export type JobsDocument = HydratedDocument<Jobs>;
 // chu y thieu decorator Scheme
 @Schema({ timestamps: true })
-export class Company {
+export class Jobs {
   @Prop()
   name: string;
+ @Prop({ type: [String] }) // ✅ dùng mảng chuỗi
+  skills: string[];
+  @Prop({ type: Object })
+  company: {
+    _id : mongoose.Schema.Types.ObjectId,
+    name : string
+  };
   @Prop()
-  address: string;
+  location: string;
+  @Prop()
+  salary: string;
+
+  @Prop()
+  quantity: string;
+
+  @Prop()
+  level: string;
+
   @Prop()
   description: string;
-  @Prop()
-  logo : string 
-  
 
-  // tôi nghĩ nên tách thành 1 file 
+  @Prop()
+  startDate: string;
+
+  @Prop()
+  endDate: string;
+  
+  @Prop()
+  isActive: boolean;
+
   @Prop()
   isDeleted: boolean;
   @Prop()
-  updateAt: Date;
+  updatedAt: Date;
   @Prop()
-  createAt: Date;
+  createdAt: Date;
   @Prop()
   deletedAt: Date;
   @Prop({ type: Object })
@@ -39,4 +60,4 @@ export class Company {
   @Prop({ type: Object })
   createBy: { _id: mongoose.Schema.Types.ObjectId; email: string };
 }
-export const CompanySchema = SchemaFactory.createForClass(Company);
+export const JobsSchema = SchemaFactory.createForClass(Jobs);

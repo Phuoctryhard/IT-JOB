@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   Res,
+  Req,
 } from '@nestjs/common';
 
 
@@ -18,7 +19,7 @@ import { api_tags } from 'src/constants/api_tag';
 
 import { AuthService } from './auth.service';
 import { Login, RegisterUserDto } from 'src/users/dto/create-user.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 @ApiTags(api_tags.AUTH)
 @ApiBearerAuth('access-token') // 👈 trùng với tên ở .addBearerAuth()
 @Controller('auth')
@@ -38,22 +39,37 @@ export class AuthController {
     return this.companiesService.login(login,response);
   }
 
+
+
   @response_Message("Get user information")
-  @Get('/acccount')
+  @Get('/account')
   //   @ApiOperation({ summary: 'Lấy danh sách công ty có phân trang và lọc nâng cao' })
   // @ApiQuery({ name: 'page', required: false, example: 1, description: 'Trang hiện tại (bắt đầu từ 1)' })
   // @ApiQuery({ name: 'limit', required: false, example: 10, description: 'Số lượng mục trên mỗi trang' })
   // @ApiQuery({ name: 'name', required: false, example: 'ABC', description: 'Lọc theo tên công ty' })
   // @ApiQuery({ name: 'sort', required: false, example: '-createdAt', description: 'Sắp xếp' })
   // @ApiQuery({ name: 'populate', required: false, example: 'owner', description: 'Quan hệ cần populate' })
-  findAll(@User() user : IUser
-  // req.user
-)  {
+  getAccount(@User() user : IUser)  {
   const { _id , name , email , role} = user
     return {
       user : {
         _id , name , email , role
       }
     }
+  }
+    // api refresh 
+  @Public()
+  @response_Message("Get User by refresh token")
+  @Get('/refresh')
+  handleRefreshToken(@User() user : IUser ,@Req() request: Request,@Res({ passthrough: true }) response: Response){
+    const refresh_token = request.cookies['refresh_token']
+    return  this.companiesService.processNewToken(refresh_token,response)
+  }
+  // api log out 
+  @response_Message("Logout User")
+  @Post('/logout')
+  logout(@User() user : IUser ,@Req() request: Request,@Res({ passthrough: true }) response: Response){
+   
+    return  this.companiesService.logout(user,response)
   }
 }

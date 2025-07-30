@@ -11,10 +11,11 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { api_tags } from 'src/constants/api_tag';
 import { response_Message, User } from 'src/auth/decorator/customize';
 import { IUser } from './user.interface';
+import { QueryUser } from './dto/query-user.dto';
 @ApiTags(api_tags.User)
 @ApiBearerAuth('access-token')
 @Controller('users')
@@ -33,10 +34,14 @@ export class UsersController {
   }
   @response_Message("Lấy danh sách User")
   @Get()
+  @ApiOperation({
+    description :"Danh sách user"
+  })
+
   findAll(
-    @Query("page") currentPage : string,
-    @Query("limit") limit : string,
-    @Query() qs : string
+    @Query("current") currentPage :string,
+    @Query("pageSize") limit : string,
+    @Query() qs : QueryUser
   ) {
     return this.usersService.findAll(+currentPage,+limit,qs);
   }

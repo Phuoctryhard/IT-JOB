@@ -10,6 +10,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { CompaniesModule } from './companies/companies.module';
 import { MailModule } from './mail/mail.module';
 import { TransformInterceptor } from './core/transform.interceptor';
+import { JobsModule } from './jobs/jobs.module';
 const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
 
 @Module({
@@ -35,6 +36,7 @@ const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
     AuthModule,
     CompaniesModule,
     MailModule,
+    JobsModule,
   ],
   controllers: [AppController],
   providers: [

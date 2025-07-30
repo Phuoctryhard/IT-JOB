@@ -9,6 +9,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './passport/jwt.strategy';
 import ms from 'ms';
 import { AuthController } from './auth.controller';
+import { User, UserSchema } from 'src/users/schemas/user.schema';
 @Module({
   // providers: [AuthService],
   // imports: [UsersModule],

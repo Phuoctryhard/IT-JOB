@@ -28,7 +28,7 @@ export class CompaniesController {
     return this.companiesService.create(createCompanyDto,user);
   }
 
-  @response_Message("Lấy danh sách thành công")
+  @response_Message("Lấy danh sách công ty thành công")
   @Get()
   //   @ApiOperation({ summary: 'Lấy danh sách công ty có phân trang và lọc nâng cao' })
   // @ApiQuery({ name: 'page', required: false, example: 1, description: 'Trang hiện tại (bắt đầu từ 1)' })
@@ -36,8 +36,8 @@ export class CompaniesController {
   // @ApiQuery({ name: 'name', required: false, example: 'ABC', description: 'Lọc theo tên công ty' })
   // @ApiQuery({ name: 'sort', required: false, example: '-createdAt', description: 'Sắp xếp' })
   // @ApiQuery({ name: 'populate', required: false, example: 'owner', description: 'Quan hệ cần populate' })
-  findAll(@Query('page') currentPage : string , 
-  @Query('limit') limit : string,
+  findAll(@Query('current') currentPage : string , 
+  @Query('pageSize') limit : string,
   @Query() qs : QueryCompany,
 )  {
     return this.companiesService.findAll(+currentPage,+limit,qs);
