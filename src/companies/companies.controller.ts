@@ -24,6 +24,7 @@ export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
   // them coong ty
   @Post()
+  @response_Message("Tạo công ty thành công")
   create(@Body() createCompanyDto: CreateCompanyDto, @User() user: IUser) {
     return this.companiesService.create(createCompanyDto,user);
   }

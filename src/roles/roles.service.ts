@@ -1,23 +1,24 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreatePermissionDto } from './dto/create-permission.dto';
-import { UpdatePermissionDto } from './dto/update-permission.dto';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { CreateRoleDto } from './dto/create-role.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { PermissionDocument, Permisson } from './schemas/permission.schemas';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
+import { Role, RoleDocument } from './schemas/roles.schemas';
+import { IUser } from 'src/users/user.interface';
 import aqp from 'api-query-params';
 import { isEmpty } from 'class-validator';
-import { IUser } from 'src/users/user.interface';
 
 @Injectable()
-export class PermissionsService {
-  constructor(@InjectModel(Permisson.name)
-  private PermissionModel : SoftDeleteModel<PermissionDocument>
-){}
-  create(createPermissionDto: CreatePermissionDto,user) {
-    console.log(createPermissionDto);
+export class RolesService {
+   constructor(
+      @InjectModel(Role.name)
+      private RolesModel: SoftDeleteModel<RoleDocument>,
+    ) {}
+  create(createRoleDto: CreateRoleDto , user : IUser) {
+  
     // trả về đối tượng được định dạng theo Scheme
-    return this.PermissionModel.create({
-      ...createPermissionDto,
+    return this.RolesModel.create({
+      ...createRoleDto,
       createBy: {
         _id: user?._id || null,
         email: user?.email || null,
@@ -25,7 +26,7 @@ export class PermissionsService {
     });
   }
 
- async findAll(currentPage: number, limit: number, qs) {
+  async findAll(currentPage: number, limit: number, qs) {
 
   // Parse query string thành filter, sort, populate dùng thư viện aqp
   // filter là phần chinh, thư viện đã làm hết rồi , tự động convert sang moogodb
@@ -49,7 +50,7 @@ export class PermissionsService {
 
   // Lấy tổng số bản ghi phù hợp với filter
   // ⚠️ Có thể thay bằng `countDocuments(filter)` để hiệu quả hơn
-  const totalItems = (await this.PermissionModel.find(filter)).length;
+  const totalItems = (await this.RolesModel.find(filter)).length;
 
   // Tính tổng số trang
   const totalPages = Math.ceil(totalItems / defaultLimit);
@@ -63,7 +64,7 @@ export class PermissionsService {
   // Truy vấn danh sách công ty với filter, phân trang, sắp xếp, và populate
   // sử dụng toán tử like 
 
-  const result = await this.PermissionModel.find(filter)
+  const result = await this.RolesModel.find(filter)
     .skip(offset) // bỏ qua offset bản ghi
     .limit(defaultLimit) // giới hạn số lượng bản ghi trả về
     // bỏ qua check code typeScipt tại dòng dưới 
@@ -82,45 +83,64 @@ export class PermissionsService {
   }
 }
 
- 
- async findOne(id: string) {
-   const data = await this.PermissionModel.findOne({ _id: id });
-   
-   if (!data) {
-     throw new NotFoundException('Không tìm thấy công ty');
-   }
-   return data
- 
- }
- 
-   update(id: string, updatePermissonDto: UpdatePermissionDto, user: IUser) {
-     return this.PermissionModel.updateOne(
-       { _id: id },
-       {
-         ...updatePermissonDto,
-         updateBy: {
-           _id: user?._id || 1,
-           email: user?.email || "Ngô đình phước",
-         },
-       },
-     );
-   }
- 
-   async remove(id: string, user: IUser) {
-     // xóa cứng
-     // return this.CompanyModel.deleteOne({ _id: id });
- 
-     // xóa mêm + them việc cập nhật  deleteBy
-     await this.PermissionModel.updateOne(
-       { _id: id },
-       {
-         deleteBy: {
-           _id: user?._id || 1,
-           email: user?.email || "Ngô đình phước",
-         },
-       },
-     );
-     //isDeleted : true
-     return this.PermissionModel.softDelete({ _id: id });
-   }
+async findOne(id: string) {
+  const data = await this.RolesModel.findOne({ _id: id }).populate({
+    path : "permissions",
+    select:{
+      _id: 1,
+      apiPath :1 ,
+      name : 1,
+      method:1,
+      module :1
+    }
+  });
+  
+  if (!data) {
+    throw new NotFoundException('Không tìm thấy công ty');
+  }
+  return data
+
+}
+
+ async update(id: string, updateRole: UpdateRoleDto, user: IUser) {
+  // Kiểm tra nếu name bị thay đổi
+  if (updateRole.name) {
+    const existed = await this.RolesModel.findOne({
+      name: updateRole.name,
+      _id: { $ne: id }, // loại trừ chính nó
+    });
+
+    if (existed) {
+      throw new BadRequestException('Tên vai trò đã tồn tại.');
+    }
+  }
+
+  return this.RolesModel.updateOne(
+    { _id: id },
+    {
+      ...updateRole,
+      updateBy: {
+        _id: user?._id || 1,
+        email: user?.email || 'Ngô đình phước',
+      },
+    },
+  );
+}
+
+  async remove(id: string, user: IUser) {
+    // xóa cứng
+    // return this.CompanyModel.deleteOne({ _id: id });
+    // xóa mêm + them việc cập nhật  deleteBy
+    await this.RolesModel.updateOne(
+      { _id: id },
+      {
+        deleteBy: {
+          _id: user?._id || 1,
+          email: user?.email || "Ngô đình phước",
+        },
+      },
+    );
+    //isDeleted : true
+    return this.RolesModel.softDelete({ _id: id });
+  }
 }

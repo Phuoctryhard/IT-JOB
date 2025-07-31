@@ -3,5 +3,7 @@ export enum api_tags {
     User="User",
     AUTH="auth",
     JOBS="jobs",
-    RESUMES="RESUMES"
+    RESUMES="RESUMES",
+    PERMISSION="PERMISSON",
+    ROLE="role"
 }
