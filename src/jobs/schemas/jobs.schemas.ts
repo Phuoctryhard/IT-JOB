@@ -59,5 +59,6 @@ export class Jobs {
   };
   @Prop({ type: Object })
   createBy: { _id: mongoose.Schema.Types.ObjectId; email: string };
+  
 }
 export const JobsSchema = SchemaFactory.createForClass(Jobs);

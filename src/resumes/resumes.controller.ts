@@ -22,8 +22,6 @@ export class ResumesController {
       createdAt: resume.createdAt
     }
   }
-
-  // 
   @response_Message("Get Resumes  by User ")
   @Get('/by-user')
   findResumeByUser(@User() user : IUser) {

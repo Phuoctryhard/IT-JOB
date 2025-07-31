@@ -3,7 +3,7 @@ import { CreateResumeDto } from './dto/create-resume.dto';
 import { UpdateResumeDto } from './dto/update-resume.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Resume } from './entities/resume.entity';
-import { Resumes, ResumesDocument } from './schemas/jobs.schemas';
+import { Resumes, ResumesDocument } from './schemas/resumes.schemas';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from 'src/users/user.interface';
 import { isEmpty } from 'class-validator';
@@ -19,6 +19,8 @@ export class ResumesService {
   create(createResumeDto: CreateResumeDto , user : IUser) {
     return this.ResumesModel.create({
       ...createResumeDto,
+      companyId: new Types.ObjectId(createResumeDto.companyId),
+      jobId: new Types.ObjectId(createResumeDto.jobId),
       email : user.email,
       userId : user._id,
       status : "PENDING",
@@ -39,28 +41,21 @@ export class ResumesService {
 
   async findAll(currentPage: number, limit: number, qs) {
 
-  // Parse query string thành filter, sort, populate dùng thư viện aqp
-  // filter là phần chinh, thư viện đã làm hết rồi , tự động convert sang moogodb
-  let { filter, sort, population} = aqp(qs);
-
+  console.log(aqp(qs))
+  let { filter, sort, population , projection} = aqp(qs);
+  console.log(population)
   // Xóa page và limit khỏi filter để tránh ảnh hưởng đến truy vấn MongoDB
   delete filter.current;
   delete filter.pageSize;
 
   // In ra filter và populate để debug
   console.log("filter",filter);
-  // 👉 Biến các trường string thành regex nếu muốn "search like"  || phía FE sử lý url cũng dc /value/i
-  // if (filter.name) {
-  //   filter.name = { $regex: filter.name, $options: 'i' }; // like không phân biệt hoa thường
-  // }
+
   // Tính toán offset cho phân trang (bỏ qua bao nhiêu bản ghi)
   let offset = (+currentPage - 1) * (+limit);
 
   // Nếu limit không hợp lệ thì mặc định là 10
   let defaultLimit = +limit ? +limit : 10;
-
-  // Lấy tổng số bản ghi phù hợp với filter
-  // ⚠️ Có thể thay bằng `countDocuments(filter)` để hiệu quả hơn
   const totalItems = (await this.ResumesModel.find(filter)).length;
 
   // Tính tổng số trang
@@ -71,16 +66,14 @@ export class ResumesService {
     // @ts-ignore: Unreachable code error (bỏ qua cảnh báo TS)
     sort = "-updatedAt";
   }
-
-  // Truy vấn danh sách công ty với filter, phân trang, sắp xếp, và populate
-  // sử dụng toán tử like 
-
+  console.log("populate ", population)
   const result = await this.ResumesModel.find(filter)
     .skip(offset) // bỏ qua offset bản ghi
     .limit(defaultLimit) // giới hạn số lượng bản ghi trả về
     // bỏ qua check code typeScipt tại dòng dưới 
     // @ts-ignore: Unreachable code error (bỏ qua lỗi nếu sort sai kiểu)
     .sort(sort) // any everywhere 
+    // .select(projection as any)
     .populate(population) // join bảng 
     .exec(); // thực thi query
   return {

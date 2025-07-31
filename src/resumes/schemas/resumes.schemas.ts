@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { Company } from 'src/companies/schemas/company.schemas';
+import { Jobs } from 'src/jobs/schemas/jobs.schemas';
 // sử dụng cho softDelete
 export type ResumesDocument = HydratedDocument<Resumes>;
 //Sử dụng @Schema({ timestamps: true }) để tự động thêm createdAt và updatedAt.
@@ -19,11 +21,13 @@ export class Resumes {
     default: 'PENDING'
   })
   status : string
-
-  @Prop({type :mongoose.Schema.Types.ObjectId })
+  
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Company.name })
   companyId: mongoose.Schema.Types.ObjectId;
-  @Prop({ type: mongoose.Schema.Types.ObjectId })
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Jobs.name })
   jobId: mongoose.Schema.Types.ObjectId;
+
 
   @Prop([
     {

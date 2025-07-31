@@ -12,6 +12,8 @@ import { MailModule } from './mail/mail.module';
 import { TransformInterceptor } from './core/transform.interceptor';
 import { JobsModule } from './jobs/jobs.module';
 import { ResumesModule } from './resumes/resumes.module';
+import { PermissionsModule } from './permissions/permissions.module';
+import { RolesNoSpecModule } from './roles--no-spec/roles--no-spec.module';
 const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
 
 @Module({
@@ -39,6 +41,8 @@ const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
     MailModule,
     JobsModule,
     ResumesModule,
+    PermissionsModule,
+    RolesNoSpecModule,
   ],
   controllers: [AppController],
   providers: [

@@ -64,7 +64,5 @@ export class CreateJobDto {
   @ApiProperty({ example: true, description: 'Công việc còn hoạt động hay không' })
   @IsBoolean()
   isActive: boolean;
-  @ApiProperty({ example: "https://www.google.com.vn/url?sa=i&url=https%3A%2F%2Fvi.pngtree.com%2Ffree-logo-png%2Fcompany-logo&psig=AOvVaw2GVjwyFafFW_1neo_YIdv6&ust=1753955384836000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCNj3vY-n5I4DFQAAAAAdAAAAABAE", description: 'Url ảnh' })
-  @IsString()
-  logo : string
+ 
 }

@@ -32,8 +32,13 @@ export class QueryResumes {
   @IsString()
   sort?: string;
 
-  @ApiPropertyOptional({ description: 'Quan hệ cần populate', example: 'owner' })
+  @ApiPropertyOptional({ description: 'Quan hệ cần populate', example: 'companyId,jobId' })
   @IsOptional()
   @IsString()
   populate?: string;
+  //// projector 
+  @ApiPropertyOptional({ description: "select fields ", example: 'companyId._id,companyId.name,companyId.logo,jobId._id,jobId.name' })
+  @IsOptional()
+  @IsString()
+  fields?: string;
 }
