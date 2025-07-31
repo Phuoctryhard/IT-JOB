@@ -24,7 +24,7 @@ export class UsersController {
 
   @response_Message("Tạo User")
 @Post()
- async  create(@Body() createUserDto: CreateUserDto , @User() user ) {
+ async  create(@Body() createUserDto: CreateUserDto , @User() user : IUser ) {
     console.log(createUserDto);
     const NewUSer= await  this.usersService.create(createUserDto , user);
     return {

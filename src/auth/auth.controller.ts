@@ -20,18 +20,21 @@ import { api_tags } from 'src/constants/api_tag';
 import { AuthService } from './auth.service';
 import { Login, RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { Request, Response } from 'express';
+import { RolesService } from 'src/roles/roles.service';
 @ApiTags(api_tags.AUTH)
 @ApiBearerAuth('access-token') // 👈 trùng với tên ở .addBearerAuth()
 @Controller('auth')
 
 export class AuthController {
-  constructor(private readonly companiesService: AuthService) {}
+  constructor(private readonly companiesService: AuthService,
+    private readonly roleService: RolesService
+  ) {}
   @response_Message("Register a new user")
   @Public()
   @Post('/register')
   create(@Body() createCompanyDto: RegisterUserDto, @User() user: IUser) {
     return this.companiesService.register(createCompanyDto);
-  }
+  } 
   @Public()
   @response_Message("User Login")
   @Post('/login')
@@ -49,14 +52,13 @@ export class AuthController {
   // @ApiQuery({ name: 'name', required: false, example: 'ABC', description: 'Lọc theo tên công ty' })
   // @ApiQuery({ name: 'sort', required: false, example: '-createdAt', description: 'Sắp xếp' })
   // @ApiQuery({ name: 'populate', required: false, example: 'owner', description: 'Quan hệ cần populate' })
-  getAccount(@User() user : IUser)  {
-  const { _id , name , email , role} = user
+  async getAccount(@User() user : IUser)  {
+  const temp = await this.roleService.findOne(user.role._id) as any 
+  user.permissions= temp.permissions
     return {
-      user : {
-        _id , name , email , role
+      user 
       }
     }
-  }
     // api refresh 
   @Public()
   @response_Message("Get User by refresh token")

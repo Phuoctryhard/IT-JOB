@@ -8,6 +8,7 @@ import ms from 'ms';
 import { Response } from 'express';
 
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
+import { RolesService } from 'src/roles/roles.service';
 
 
 @Injectable()
@@ -18,16 +19,27 @@ export class AuthService {
     // giai ma token : verify va decode 
     private jwtService: JwtService,
     private configService: ConfigService,
+    private roleService : RolesService
 
   ) {}
 
   // username va pass la 2 thu vien passwort no nem ve
   async validateUser(username: string, pass: string): Promise<any> {
+    // user chưa role 
     const user = await this.usersService.findOneByUsername(username);
     if (user) {
       const isValid = this.usersService.isValidPassword(pass, user.password);
       if (isValid) {
-        return user;
+
+        // return user;
+        // trả thêm permission 
+        const userRole = user.role as unknown as {_id : string , name :string}
+        const temp = await this.roleService.findOne(userRole._id)
+        const ObjUser ={
+          ...user.toObject(),
+          permissions : temp?.permissions?? []
+        }
+        return ObjUser
       }
     }
     return null;
@@ -39,8 +51,8 @@ export class AuthService {
     if(!user){
       throw new BadRequestException("Not found User")
     }
-   
-    const { _id, name, email, role } = user;
+   // có thêm permission
+    const { _id, name, email, role,permissions } = user;
     const payload = {
       sub: 'token login',
       iss: 'from server ',
@@ -48,6 +60,7 @@ export class AuthService {
       name,
       email,
       role,
+  
     };
 
     const resfreshToken = this.createRefreshToken(payload)
@@ -68,6 +81,7 @@ export class AuthService {
         name,
         email,
         role,
+        permissions
       }
     };
   }
@@ -110,10 +124,14 @@ export class AuthService {
           email,
           role,
         };
-
+        // fetch user 's role 
+        const userRole = user.role as unknown as  {_id : string , name : string }
+        const temp = await this.roleService.findOne(userRole._id)
+        //////
         const resfreshToken = this.createRefreshToken(payload)
         // update user with refreshToken 
         response.clearCookie('refresh_token')
+        // cập nhật refreshtoken 
         await this.usersService.updateUserToken(resfreshToken,_id.toString())
         // set Cookie with refreshToken
         // = time resfreshToken để sau này hết hạn tự mất
@@ -130,6 +148,7 @@ export class AuthService {
             name,
             email,
             role,
+            permissions : temp?.permissions??[]
           }
         };
       }

@@ -7,6 +7,7 @@ import { Role, RoleDocument } from './schemas/roles.schemas';
 import { IUser } from 'src/users/user.interface';
 import aqp from 'api-query-params';
 import { isEmpty } from 'class-validator';
+import { RoleEnum } from 'src/constants/role';
 
 @Injectable()
 export class RolesService {
@@ -127,20 +128,29 @@ async findOne(id: string) {
   );
 }
 
-  async remove(id: string, user: IUser) {
-    // xóa cứng
-    // return this.CompanyModel.deleteOne({ _id: id });
-    // xóa mêm + them việc cập nhật  deleteBy
-    await this.RolesModel.updateOne(
-      { _id: id },
-      {
-        deleteBy: {
-          _id: user?._id || 1,
-          email: user?.email || "Ngô đình phước",
-        },
-      },
-    );
-    //isDeleted : true
-    return this.RolesModel.softDelete({ _id: id });
+async remove(id: string, user: IUser) {
+  const role = await this.RolesModel.findById(id);
+
+  if (!role) {
+    throw new BadRequestException('Role không tồn tại');
   }
+
+  if (role.name === RoleEnum.ADMIN) {
+    throw new BadRequestException('Không được phép xóa role Admin');
+  }
+
+  // Cập nhật người xóa
+  await this.RolesModel.updateOne(
+    { _id: id },
+    {
+      deleteBy: {
+        _id: user?._id || 1,
+        email: user?.email || 'Ngô đình phước',
+      },
+    },
+  );
+
+  // Soft delete (isDeleted: true + deletedAt)
+  return this.RolesModel.softDelete({ _id: id });
+}
 }

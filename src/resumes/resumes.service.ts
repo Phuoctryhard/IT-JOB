@@ -141,7 +141,16 @@ export class ResumesService {
   }
   async findResumeUser(user : IUser) {
     // const userId = new Types.ObjectId(user._id.toString()); // ép kiểu an toàn
-    const data = await this.ResumesModel.findOne({ userId : user._id });
+    const data = await this.ResumesModel.findOne({ userId : user._id }).populate([
+      {
+      path : "companyId",
+      select:{name : 1}
+      },
+      {
+      path : "jobId",
+      select:{name : 1}
+      }
+    ]);
     if (!data) {
       throw new NotFoundException('Không tìm thấy CV của User ');
     }

@@ -10,6 +10,7 @@ import { Permisson, PermissonSchema } from 'src/permissions/schemas/permission.s
     name : Role.name, schema : RoleSchema },{ name : Permisson.name,schema : PermissonSchema
   }])],
   controllers: [RolesController],
-  providers: [RolesService]
+  providers: [RolesService],
+  exports: [RolesService], // 👈 Bắt buộc phải có
 })
 export class RolesModule {}

@@ -10,6 +10,7 @@ import { JwtStrategy } from './passport/jwt.strategy';
 import ms from 'ms';
 import { AuthController } from './auth.controller';
 import { User, UserSchema } from 'src/users/schemas/user.schema';
+import { RolesModule } from 'src/roles/roles.module';
 @Module({
   // providers: [AuthService],
   // imports: [UsersModule],
@@ -26,6 +27,7 @@ import { User, UserSchema } from 'src/users/schemas/user.schema';
       }),
       inject: [ConfigService],
     }),
+    RolesModule,
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   controllers:[AuthController],

@@ -1,6 +1,7 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsEmail, IsMongoId, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+import mongoose from 'mongoose';
 
 class CompanyDto {
   @ApiProperty({ example: '64b7c7c3d9f3c2a1d2e4b9aa', description: 'ID của công ty' })
@@ -45,10 +46,10 @@ export class CreateUserDto {
   @Type(() => CompanyDto)
   company?: CompanyDto;
 
-  @ApiProperty({ example: 'USER', description: 'Vai trò của người dùng', required: false })
+  @ApiProperty({ example: '688b32e790d8c0eed617c930', description: 'ID Vai trò của người dùng', required: false })
   @IsOptional()
-  @IsString()
-  role?: string;
+  @IsMongoId({message:"Role có định dạng moogodb"})
+  role?: mongoose.Schema.Types.ObjectId;
 }
 
 

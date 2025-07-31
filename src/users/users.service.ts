@@ -10,9 +10,11 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import aqp from 'api-query-params';
 import { isEmpty } from 'class-validator';
 import { QueryUser } from './dto/query-user.dto';
+import { Role, RoleDocument } from 'src/roles/schemas/roles.schemas';
+import { RoleEnum } from 'src/constants/role';
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(UserM.name) private userModel: SoftDeleteModel<UserDocument>) {}
+  constructor(@InjectModel(UserM.name) private userModel: SoftDeleteModel<UserDocument>,@InjectModel(Role.name) private roleModel: SoftDeleteModel<RoleDocument>) {}
   //why lại code contructor :
   // nhờ có  decorator (@InjectModel(User.name) thì biến useModal biết ứng với modal nào : tiêm modal của moogno vào biến userModal đó
 
@@ -53,10 +55,13 @@ export class UsersService {
     if(IxistEmail){
       throw new BadRequestException(`Email ${email} đã được sử dụng !`)
     }
+    // fetch user Role 
+    const RoleUser = await this.roleModel.findOne({name : RoleEnum.USER})
     const hashpassword = this.getHashPassword(password);
     let newRegister = await this.userModel.create({
       name , email,password:hashpassword,
-      gender,age,address,role:"USER"
+      gender,age,address,
+      role:RoleUser._id
     })
     return newRegister
   }
@@ -113,13 +118,21 @@ export class UsersService {
 }
   findOne(id: string) {
     if (id.match(/^[0-9a-fA-F]{24}$/)) {
-      return this.userModel.findOne({ _id: id }).select("-password");
+      return this.userModel.findOne({ _id: id }).select("-password").populate({
+        path :'role',
+        select:{name : 1,_id : 1}
+      });
     }
     return 'Error';
   }
-  // email
+  // email // login 
   findOneByUsername(userName: string) {
-    return this.userModel.findOne({ email: userName });
+    return this.userModel.findOne({ email: userName }).populate({
+      path : "role",
+      select:{
+        name : 1
+      }
+    });
   }
 
   isValidPassword(password, hashpassword) {
@@ -157,7 +170,12 @@ export class UsersService {
       refreshToken
     })
   }
+  // refreshToken 
   findUserByToken = async(refreshToken)=>{
-    return this.userModel.findOne({refreshToken})
-  }
+    return this.userModel.findOne({refreshToken}).populate({
+      path : "role",
+      select:{
+        name : 1
+      }
+  })}
 }
