@@ -2,9 +2,13 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { RolesService } from 'src/roles/roles.service';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private configService: ConfigService) {
+  constructor(private configService: ConfigService,
+
+    private roleService: RolesService
+  ) {
     super({
       // giải mã request giải mã access toekn
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -14,13 +18,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
     });
   }
-  // trả về thoogn tin người dùng sau khi giải mã
+  // trả về thông tin người dùng sau khi giải mã token ở trên
   async validate(payload: any) {
     // trả ra cái user để bên kia nạp vào req.user
     console.log(payload);
     const { _id, name, email, role } = payload;
+    // 31/7 gán thêm permisson vào 
+     const roleUser = await this.roleService.findOne(role._id) 
+     const temp = roleUser.permissions
+
     // req.user
-    return { _id, name, email, role };
+    return { _id, name, email, role,permissions : temp };
   }
 }
 

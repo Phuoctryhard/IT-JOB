@@ -38,8 +38,7 @@ export class CreateJobDto {
   salary: number;
 
   @ApiProperty({ example: 5, description: 'Số lượng tuyển' })
-  @IsNumber()
-  quantity: number;
+  quantity;
 
   @ApiProperty({ example: 'Junior', description: 'Cấp độ công việc' })
   @IsString()

@@ -5,5 +5,6 @@ export enum api_tags {
     JOBS="jobs",
     RESUMES="RESUMES",
     PERMISSION="PERMISSON",
-    ROLE="role"
+    ROLE="role",
+    FILES="files"
 }

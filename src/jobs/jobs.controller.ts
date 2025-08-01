@@ -4,7 +4,7 @@ import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { api_tags } from 'src/constants/api_tag';
-import { response_Message, User } from 'src/auth/decorator/customize';
+import { Public, response_Message, User } from 'src/auth/decorator/customize';
 import { IUser } from 'src/users/user.interface';
 import { QueryJobs } from './dto/query-job.dto';
 
@@ -25,6 +25,7 @@ export class JobsController {
       createdAt : jobs.createdAt
     }
   }
+  @Public()
  @response_Message("List new jobs")
   @ApiOperation({
     description:"Lấy danh sách Jobs"
@@ -33,6 +34,7 @@ export class JobsController {
   findAll(@Query("current")currentPage : string, @Query("pageSize") pageSize : string , @Query() qs :QueryJobs )   {
     return this.jobsService.findAll(+currentPage, +pageSize, qs);
   }
+  @Public()
   @response_Message("Get a  new jobs")
   @ApiOperation({
     description:"Lấy a  Jobs"

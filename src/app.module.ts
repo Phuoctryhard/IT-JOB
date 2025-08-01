@@ -14,6 +14,8 @@ import { JobsModule } from './jobs/jobs.module';
 import { ResumesModule } from './resumes/resumes.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { RolesModule } from './roles/roles.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { UploadFileModule } from './upload-file/upload-file.module';
 
 const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
 
@@ -44,6 +46,8 @@ const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
     ResumesModule,
     PermissionsModule,
     RolesModule,
+    CloudinaryModule,
+    UploadFileModule,
   
   ],
   controllers: [AppController],

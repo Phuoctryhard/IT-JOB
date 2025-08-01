@@ -52,14 +52,15 @@ export class AuthController {
   // @ApiQuery({ name: 'name', required: false, example: 'ABC', description: 'Lọc theo tên công ty' })
   // @ApiQuery({ name: 'sort', required: false, example: '-createdAt', description: 'Sắp xếp' })
   // @ApiQuery({ name: 'populate', required: false, example: 'owner', description: 'Quan hệ cần populate' })
-  async getAccount(@User() user : IUser)  {
+  async getAccount(@User() user : IUser , @Req() request: Request)  {
+   console.log( request.route?.path)
   const temp = await this.roleService.findOne(user.role._id) as any 
   user.permissions= temp.permissions
     return {
       user 
       }
     }
-    // api refresh 
+  // api refresh 
   @Public()
   @response_Message("Get User by refresh token")
   @Get('/refresh')

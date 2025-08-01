@@ -37,7 +37,8 @@ async function bootstrap() {
 
 
   app.useGlobalGuards(new JwtAuthGuard(reflector));
-  const port = configService.get('PORT');
+ const port = process.env.PORT || 3000;
+
 
   const config = new DocumentBuilder()
     .setTitle('IT JOB')
@@ -71,5 +72,6 @@ async function bootstrap() {
     defaultVersion: ['1', '2'],
   });
   await app.listen(port);
+  console.log(`🚀 Server is running on port ${port}`);
 }
 bootstrap();
