@@ -47,6 +47,7 @@ async function bootstrap() {
     .addTag('IT Jobs ')
     .addServer('http://localhost:8000/api/v1')
      .addServer('http://localhost:8000/api/v2')
+     .addServer(process.env.PORT_DEPLOY)
     .addBearerAuth(
     {
       type: 'http',
