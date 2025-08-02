@@ -88,7 +88,7 @@ export class SubsribersService {
       return data
   }
 
- async update(id: string, updateSubsriberDto: UpdateSubsriberDto, user) {
+ async update( updateSubsriberDto: UpdateSubsriberDto, user) {
     const updated = await this.Subscribers.updateOne({
       email:user.email
       },

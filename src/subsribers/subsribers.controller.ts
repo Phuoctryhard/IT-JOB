@@ -43,9 +43,9 @@ export class SubsribersController {
   }
    @response_Message("Cập nhật thành công")
   @IS_PUBLIC_PERMISSION()
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSubsriberDto: UpdateSubsriberDto , @User()user : IUser) {
-    return this.subsribersService.update(id, updateSubsriberDto,user);
+  @Patch()
+  update( @Body() updateSubsriberDto: UpdateSubsriberDto , @User()user : IUser) {
+    return this.subsribersService.update( updateSubsriberDto,user);
   }
 
   @Delete(':id')
