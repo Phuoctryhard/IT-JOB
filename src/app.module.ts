@@ -16,6 +16,7 @@ import { PermissionsModule } from './permissions/permissions.module';
 import { RolesModule } from './roles/roles.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { UploadFileModule } from './upload-file/upload-file.module';
+import { SubsribersModule } from './subsribers/subsribers.module';
 
 const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
 
@@ -48,6 +49,7 @@ const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
     RolesModule,
     CloudinaryModule,
     UploadFileModule,
+    SubsribersModule,
   
   ],
   controllers: [AppController],

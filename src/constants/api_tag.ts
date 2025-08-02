@@ -6,5 +6,7 @@ export enum api_tags {
     RESUMES="RESUMES",
     PERMISSION="PERMISSON",
     ROLE="role",
-    FILES="files"
+    FILES="files",
+    MAIL = "mail",
+    SUBSCRIBERS="SUBSCRIBER"
 }

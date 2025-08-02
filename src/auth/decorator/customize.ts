@@ -2,6 +2,7 @@ import { SetMetadata } from '@nestjs/common';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 export const IS_PUBLIC_KEY = 'isPublic';
 export const RESPONSE_MESSAGE ='response_message'
+export const IS_PUBLIC_PERMISSION_ ="IS_PUBLIC_PERMISSION"
 // Định nghĩa 1 decorator Public
 //mục địch định nghĩa 1 decorator :  truyền metadata lên function . metadata là key : value thông tin đính kèm
 // ném metadata vào @decorator public , nestjs xử lí function login sẽ lấy dc metadata
@@ -17,4 +18,6 @@ export const User = createParamDecorator(
 );
 // decorate custome Message 
 export const response_Message = (message) => SetMetadata(RESPONSE_MESSAGE, message); // key : value
+
+export const IS_PUBLIC_PERMISSION = () => SetMetadata(IS_PUBLIC_PERMISSION_, true); // key : value
 

@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { IS_PUBLIC_KEY } from './decorator/customize';
+import { IS_PUBLIC_KEY, IS_PUBLIC_PERMISSION_ } from './decorator/customize';
 import { Reflector } from '@nestjs/core';
 import { request as Request } from 'express';
 @Injectable()
@@ -36,26 +36,32 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
 // ✅ Lấy request từ context
-  // const request = context.switchToHttp().getRequest();
-  //   // check permission 
-  //   const targetMethod = Request.method;
-  //   const targetEndpoint = Request.route?.path;
-        // ✅ Danh sách endpoint bỏ qua kiểm tra quyền
-  const skipEndpoints = ['/api/v1/auth/account','/api/v1/auth/logout','/api/v1/auth/refresh'];
-
-  //  // ✅ Nếu endpoint được skip → bỏ qua luôn kiểm tra permission
-  //   if (skipEndpoints.includes(request.route?.path)) {
-  //     return user;
-  //   }
-    // const permissions = user.permissions
-    // const IsExist = permissions.find(permission=>{
-    //   permission.method == targetMethod && targetEndpoint == permission.apiPath
-    // }) 
+  const request = context.switchToHttp().getRequest();
+    // check permission 
+    const targetMethod = Request.method;
+    const targetEndpoint = Request.route?.path;
  
-    // if(!IsExist){
-    //   console.log(targetEndpoint)
-    //   throw new ForbiddenException("Bạn không có quyền truy cập endpoint")
-    // }
+    const permissions = user.permissions
+    var IsExist = permissions.find(permission=>{
+      permission.method == targetMethod && targetEndpoint == permission.apiPath
+    }) 
+ 
+      // ✅ Danh sách endpoint bỏ qua kiểm tra quyền
+    const skipEndpoints = ['/api/v1/auth/account','/api/v1/auth/logout','/api/v1/auth/refresh'];
+
+     // ✅ Nếu endpoint được skip → bỏ qua luôn kiểm tra permission
+    if (skipEndpoints.includes(request.route?.path)) {
+      IsExist = true;
+    }
+
+     const IS_PUBLIC_PERMISSION = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_PERMISSION_, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if(!IsExist && !IS_PUBLIC_PERMISSION){
+      console.log(targetEndpoint)
+      throw new ForbiddenException("Bạn không có quyền truy cập endpoint")
+    }
     return user;
   }
 }
