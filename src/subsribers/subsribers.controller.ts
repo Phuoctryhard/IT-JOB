@@ -29,8 +29,8 @@ export class SubsribersController {
   }
 
   @response_Message("Lấy danh sách công ty thành công")
+    @IS_PUBLIC_PERMISSION()
     @Get()
-    
     findAll(@Query('current') currentPage : string , 
     @Query('pageSize') limit : string,
     @Query() qs : QuerySubsriber) {

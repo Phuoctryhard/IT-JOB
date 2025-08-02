@@ -119,6 +119,6 @@ export class SubsribersService {
   }
   async getSkills(user : IUser){
     const {email} = user ;
-    return await this.Subscribers.findOne({email},{skill:1})
+    return await this.Subscribers.findOne({email},{skills:1})
   }
 }
