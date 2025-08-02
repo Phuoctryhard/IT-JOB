@@ -28,7 +28,7 @@ export class SubsribersController {
     return this.subsribersService.create(createSubsriberDto,user);
   }
 
-  @response_Message("Lấy danh sách công ty thành công")
+    @response_Message("Lấy danh sách thành công")
     @IS_PUBLIC_PERMISSION()
     @Get()
     findAll(@Query('current') currentPage : string , 
@@ -41,7 +41,8 @@ export class SubsribersController {
   findOne(@Param('id') id: string) {
     return this.subsribersService.findOne(id);
   }
- @IS_PUBLIC_PERMISSION()
+   @response_Message("Cập nhật thành công")
+  @IS_PUBLIC_PERMISSION()
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateSubsriberDto: UpdateSubsriberDto , @User()user : IUser) {
     return this.subsribersService.update(id, updateSubsriberDto,user);
