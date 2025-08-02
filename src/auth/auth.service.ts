@@ -95,7 +95,7 @@ export class AuthService {
       }
 
     }catch(error){
-      console.log("Error")
+      throw error; // Rất quan trọng: đẩy exception cho NestJS handle
     }
   }
 

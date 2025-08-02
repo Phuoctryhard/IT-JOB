@@ -52,6 +52,7 @@ export class UsersService {
     const {name , email,password , age , gender , address } = user
     // add logic checkemail 
     const IxistEmail = await this.userModel.findOne({email})
+    console.log("email",IxistEmail)
     if(IxistEmail){
       throw new BadRequestException(`Email ${email} đã được sử dụng !`)
     }

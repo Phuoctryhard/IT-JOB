@@ -5,7 +5,7 @@ import { UpdateResumeDto } from './dto/update-resume.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { api_tags } from 'src/constants/api_tag';
 import { IUser } from 'src/users/user.interface';
-import { response_Message, User } from 'src/auth/decorator/customize';
+import { IS_PUBLIC_PERMISSION, response_Message, User } from 'src/auth/decorator/customize';
 import { QueryResumes } from './dto/query-resume.dto';
 
 @ApiTags(api_tags.RESUMES)
@@ -22,8 +22,9 @@ export class ResumesController {
       createdAt: resume.createdAt
     }
   }
+ 
   @response_Message("Get Resumes  by User ")
-  @Get('/by-user')
+  @Post('/by-user')
   findResumeByUser(@User() user : IUser) {
     return this.resumesService.findResumeUser(user);
   }

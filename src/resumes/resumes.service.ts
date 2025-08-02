@@ -139,21 +139,22 @@ export class ResumesService {
     //isDeleted : true
     return this.ResumesModel.softDelete({ _id: id });
   }
-  async findResumeUser(user : IUser) {
-    // const userId = new Types.ObjectId(user._id.toString()); // ép kiểu an toàn
-    const data = await this.ResumesModel.findOne({ userId : user._id }).populate([
-      {
-      path : "companyId",
-      select:{name : 1}
-      },
-      {
-      path : "jobId",
-      select:{name : 1}
-      }
-    ]);
-    if (!data) {
-      throw new NotFoundException('Không tìm thấy CV của User ');
-    }
-    return data
+async findResumeUser(user: IUser) {
+  const data = await this.ResumesModel.findOne({ userId: user._id }).populate([
+    {
+      path: 'companyId',
+      select: { name: 1 },
+    },
+    {
+      path: 'jobId',
+      select: { name: 1 },
+    },
+  ]);
+
+  if (!data) {
+    throw new NotFoundException('Không tìm thấy CV của User');
   }
+
+  return [data]; // ✅ luôn trả về 1 mảng
+}
 }
