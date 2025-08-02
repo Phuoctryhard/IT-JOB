@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSubsriberDto } from './dto/create-subsriber.dto';
 import { UpdateSubsriberDto } from './dto/update-subsriber.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -14,19 +14,30 @@ export class SubsribersService {
     @InjectModel(Subsribers.name)
     private Subscribers : SoftDeleteModel<SubsribersDocument>
   ){}
-  async create(createSubsriberDto: CreateSubsriberDto ,user:IUser) {
-    const newSub = await this.Subscribers.create({
-      ...createSubsriberDto,
-      createdBy : {
-        _id : user._id,
-        email : user.email
-      }
-    })
-    return {
-      _id : newSub._id,
-      createBdy : newSub.createdAt
-    } ;
+  async create(createSubsriberDto: CreateSubsriberDto, user: IUser) {
+  // Bước 1: Kiểm tra email đã tồn tại chưa
+  const existing = await this.Subscribers.findOne({
+    email: createSubsriberDto.email,
+  });
+
+  if (existing) {
+    throw new BadRequestException('Email đã tồn tại trong danh sách đăng ký');
   }
+  // Bước 2: Tạo mới nếu chưa tồn tại
+  const newSub = await this.Subscribers.create({
+    ...createSubsriberDto,
+    createdBy: {
+      _id: user._id,
+      email: user.email,
+    },
+  });
+
+  return {
+    _id: newSub._id,
+    createdAt: newSub.createdAt, // sửa `createBdy` thành `createdAt`
+  };
+}
+
 
   async findAll(currentPage,limit,qs) {
   // Parse query string thành filter, sort, populate dùng thư viện aqp
@@ -102,6 +113,7 @@ export class SubsribersService {
         upsert : true
       }
     )
+    return updated
   }
 
   async remove(id: string,user: IUser) {

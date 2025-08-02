@@ -58,7 +58,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       context.getHandler(),
       context.getClass(),
     ]);
-    if(!IsExist && !IS_PUBLIC_PERMISSION){
+    // if(!IsExist && !IS_PUBLIC_PERMISSION){
+     if( !IS_PUBLIC_PERMISSION){
       console.log(targetEndpoint)
       throw new ForbiddenException("Bạn không có quyền truy cập endpoint")
     }

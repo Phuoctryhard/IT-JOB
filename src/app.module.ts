@@ -17,7 +17,7 @@ import { RolesModule } from './roles/roles.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { UploadFileModule } from './upload-file/upload-file.module';
 import { SubsribersModule } from './subsribers/subsribers.module';
-
+import { ScheduleModule } from '@nestjs/schedule';
 const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
 
 @Module({
@@ -50,7 +50,7 @@ const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
     CloudinaryModule,
     UploadFileModule,
     SubsribersModule,
-  
+    ScheduleModule.forRoot()
   ],
   controllers: [AppController],
   providers: [

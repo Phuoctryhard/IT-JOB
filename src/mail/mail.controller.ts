@@ -1,6 +1,6 @@
 import { Controller, Get, Inject } from '@nestjs/common';
 import { MailService } from './mail.service';
-import { Public } from 'src/auth/decorator/customize';
+import { Public, response_Message } from 'src/auth/decorator/customize';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ApiTags } from '@nestjs/swagger';
 import { api_tags } from 'src/constants/api_tag';
@@ -10,7 +10,7 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { Jobs, JobsDocument } from 'src/jobs/schemas/jobs.schemas';
 import { find } from 'rxjs';
 
-
+import { Cron } from '@nestjs/schedule';
 @ApiTags(api_tags.MAIL)
 @Controller('mail')
 export class MailController {
@@ -24,6 +24,8 @@ export class MailController {
     @InjectModel(Jobs.name)
     private JobsModel : SoftDeleteModel<JobsDocument>
   ) {}
+  @response_Message("Test mail")
+  @Cron("0 10 0 * * 0") // every sunday// 00:10 AM every Sunday
   @Get()
   @Public()
   async handletestEmail() {
@@ -44,8 +46,8 @@ export class MailController {
       to: subscriber.email, // list of receivers
       from: 'noreply@nestjs.com', // sender address
       // tiêu đề
-      subject: 'Testing Nest MailerModule ✔', // Subject line
-      text: 'Welcome', // plaintext body
+      subject: 'Công việc phù hợp với bạn 🔍', // Subject line
+      text: 'Chào bạn,\n\nDưới đây là một số công việc phù hợp với kỹ năng của bạn:', // plaintext body
       template: 'new-job',
       context:{
         name : subscriber.name,

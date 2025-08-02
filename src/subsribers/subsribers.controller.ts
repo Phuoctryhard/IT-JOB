@@ -41,13 +41,13 @@ export class SubsribersController {
   findOne(@Param('id') id: string) {
     return this.subsribersService.findOne(id);
   }
-   @response_Message("Cập nhật thành công")
+  @response_Message("Cập nhật thành công")
   @IS_PUBLIC_PERMISSION()
   @Patch()
   update( @Body() updateSubsriberDto: UpdateSubsriberDto , @User()user : IUser) {
     return this.subsribersService.update( updateSubsriberDto,user);
   }
-
+  @response_Message("Xóa thành công")
   @Delete(':id')
   remove(@Param('id') id: string, @User() user : IUser) {
     return this.subsribersService.remove(id,user);
