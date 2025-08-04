@@ -20,9 +20,11 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   // set up cors
   app.enableCors({
-    origin: true, // ✅ chính xác domain của frontend
-    // cho phép giữa client và server trao đổi cookie
-    credentials: true,               // ✅ để hỗ trợ gửi cookie hoặc Authorization header
+    origin: [
+      'http://localhost:3000',                // ✅ local dev
+      'https://vietlamit.netlify.app',        // ✅ production frontend
+    ],
+    credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
   });
