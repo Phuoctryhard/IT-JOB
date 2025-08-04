@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { Type } from "class-transformer";
-import { IsInt, IsOptional, IsString, Min } from "class-validator";
+import { Transform, Type } from "class-transformer";
+import { IsArray, IsInt, IsOptional, IsString, Min } from "class-validator";
 
 export class QueryJobs {
   @ApiPropertyOptional({ description: 'Trang hiện tại (bắt đầu từ 1)', example: '1' })
@@ -17,15 +17,23 @@ export class QueryJobs {
   @Min(1)
   pageSize?: number = 10;
 
-  @ApiPropertyOptional({ description: 'Lọc theo tên công ty', example: 'ABC' })
+  @ApiPropertyOptional({ description: 'Lọc theo tên kĩ năng', example: ['React.JS','Node.JS'] ,type: [String]}) // đảm bảo Swagger hiểu đây là mảng chuỗi})
   @IsOptional()
-  @IsString()
-  name?: string;
+  @IsArray()
+  @IsString({each:true})
+  @Transform(({ value }) => (typeof value === 'string' ? [value] : value))
+  skills?: string[];
 
-  @ApiPropertyOptional({ description: 'Lọc theo địa chỉ công ty', example: 'ABC' })
+   @ApiPropertyOptional({
+    description: 'Lọc theo vị trí',
+    example: ['Đà Nẵng', 'HOCHIMINH'],
+    type: [String], // đảm bảo Swagger hiểu đây là mảng chuỗi
+  })
   @IsOptional()
-  @IsString()
-  address?: string;
+  @IsArray()
+  @IsString({ each: true })
+  @Transform(({ value }) => (typeof value === 'string' ? [value] : value))
+  location?: string[];
 
   @ApiPropertyOptional({ description: 'Sắp xếp', example: '-createdAt' })
   @IsOptional()

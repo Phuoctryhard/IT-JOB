@@ -39,8 +39,19 @@ export class JobsService {
     // @ts-ignore: Unreachable code error (bỏ qua cảnh báo TS)
     sort = "-updatedAt";
   }
+  // "skills": {
+  //     "$in": [
+  //       "React.JS",
+  //       "Node.JS"
+  //     ]
+  //   },
+  //   "location": {
+  //     "$in": [
+  //       "Đà Nẵng",
+  //       "HOCHIMINH"
+  //     ]
+  //   }
   // Truy vấn danh sách công ty với filter, phân trang, sắp xếp, và populate
-  // sử dụng toán tử like 
   const result = await this.JobsModel.find(filter)
     .skip(offset) // bỏ qua offset bản ghi
     .limit(defaultLimit) // giới hạn số lượng bản ghi trả về
