@@ -7,7 +7,7 @@ import { Resumes, ResumesDocument } from './schemas/resumes.schemas';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from 'src/users/user.interface';
 import { isEmpty } from 'class-validator';
-import aqp from 'api-query-params';
+// import aqp from 'api-query-params';
 import { Types } from 'mongoose';
 
 @Injectable()
@@ -40,7 +40,7 @@ export class ResumesService {
   }
 
   async findAll(currentPage: number, limit: number, qs) {
-
+ const aqp = (await import('api-query-params')).default;
   console.log(aqp(qs))
   let { filter, sort, population , projection} = aqp(qs);
   console.log(population)

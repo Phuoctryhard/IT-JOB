@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Jobs, JobsDocument } from './schemas/jobs.schemas';
 import { Model } from 'mongoose';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
-import aqp from 'api-query-params';
+// import aqp from 'api-query-params';
 import { isEmpty } from 'class-validator';
 import { IUser } from 'src/users/user.interface';
 
@@ -23,6 +23,7 @@ export class JobsService {
   }
 
    async findAll(currentPage: number, limit: number, qs) {
+     const aqp = (await import('api-query-params')).default;
   let { filter, sort, population} = aqp(qs);
   // Xóa page và limit khỏi filter để tránh ảnh hưởng đến truy vấn MongoDB
   delete filter.current;

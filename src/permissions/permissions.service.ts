@@ -4,7 +4,7 @@ import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { PermissionDocument, Permisson } from './schemas/permission.schemas';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
-import aqp from 'api-query-params';
+// import aqp from 'api-query-params';
 import { isEmpty } from 'class-validator';
 import { IUser } from 'src/users/user.interface';
 
@@ -26,7 +26,7 @@ export class PermissionsService {
   }
 
  async findAll(currentPage: number, limit: number, qs) {
-
+ const aqp = (await import('api-query-params')).default;
   // Parse query string thành filter, sort, populate dùng thư viện aqp
   // filter là phần chinh, thư viện đã làm hết rồi , tự động convert sang moogodb
   let { filter, sort, population} = aqp(qs);

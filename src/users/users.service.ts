@@ -7,7 +7,7 @@ import { Model } from 'mongoose';
 import { genSaltSync, hashSync, compareSync } from 'bcryptjs';
 import { IUser } from './user.interface';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
-import aqp from 'api-query-params';
+// import aqp from 'api-query-params';
 import { isEmpty } from 'class-validator';
 import { QueryUser } from './dto/query-user.dto';
 import { Role, RoleDocument } from 'src/roles/schemas/roles.schemas';
@@ -68,6 +68,7 @@ export class UsersService {
   }
 
   async findAll(currentPage : number,limit : number ,qs ) {
+    const aqp = (await import('api-query-params')).default;
      let { filter, sort, population,projection } = aqp(qs);
 
   // Xóa page và limit khỏi filter để tránh ảnh hưởng đến truy vấn MongoDB

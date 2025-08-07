@@ -7,7 +7,7 @@ import { Model } from 'mongoose';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from 'src/users/user.interface';
 import { isEmpty } from 'class-validator';
-import aqp from 'api-query-params';
+// import aqp from 'api-query-params';
 import { json } from 'stream/consumers';
 @Injectable()
 export class CompaniesService {
@@ -29,7 +29,7 @@ export class CompaniesService {
   }
 
  async findAll(currentPage: number, limit: number, qs) {
-
+ const aqp = (await import('api-query-params')).default;
   // Parse query string thành filter, sort, populate dùng thư viện aqp
   // filter là phần chinh, thư viện đã làm hết rồi , tự động convert sang moogodb
   let { filter, sort, population} = aqp(qs);

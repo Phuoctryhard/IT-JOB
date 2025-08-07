@@ -1,6 +1,7 @@
 
 services:
   db-mongo:
+  # kéo mongo version 6..
     image: mongo:6.0.6
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
@@ -14,13 +15,16 @@ services:
       
   be-nest: 
     build:
+      # chỉ ra file dockerFile nằm ở đâu
       context: .
+      
       dockerfile: Dockerfile
     # restart: unless-stopped 
+    # ghì đè
     environment:
       - PORT=8080
       - NODE_ENV=production
-      - MONGO_URL=mongodb://root:123456@mydb:27017/hoidanit?authSource=admin
+      - MONGO_URL=mongodb://root:123456@localhost:27017/hoidanit?authSource=admin
       # - DB_HOST=host.docker.internal
     expose:
       - 8080

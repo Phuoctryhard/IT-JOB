@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Subsribers, SubsribersDocument } from './schemas/subsribers.schemas';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from 'src/users/user.interface';
-import aqp from 'api-query-params';
+// import aqp from 'api-query-params';
 import { isEmpty } from 'class-validator';
 
 @Injectable()
@@ -42,6 +42,7 @@ export class SubsribersService {
   async findAll(currentPage,limit,qs) {
   // Parse query string thành filter, sort, populate dùng thư viện aqp
   // filter là phần chinh, thư viện đã làm hết rồi , tự động convert sang moogodb
+   const aqp = (await import('api-query-params')).default;
   let { filter, sort, population} = aqp(qs);
 
   // Xóa page và limit khỏi filter để tránh ảnh hưởng đến truy vấn MongoDB
