@@ -4,8 +4,6 @@
 
 #### 2. Chạy dự án với câu lệnh: npm run dev
 
-
-Udemy Hỏi Dân IT: https://www.udemy.com/user/eric-7039/
 ngodinhphuoc100
 phuocyeuem2k3
 
